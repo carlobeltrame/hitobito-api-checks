@@ -26,13 +26,13 @@ $groupId = $getParam('groupId');
 <form method="GET">
   <div class="field has-addons">
     <div class="control">
-      <input class="input field" type="url" name="hitobitoUrl" value="<?=$hitobitoUrl ?: 'https://pbs.puzzle.ch'?>" />
+      <input class="input field" type="url" name="hitobitoUrl" value="<?=$hitobitoUrl ?: 'https://pbs.puzzle.ch'?>" required />
     </div>
     <div class="control">
-      <input class="input field" type="text" name="apiToken" placeholder="API token" autofocus />
+      <input class="input field" type="text" name="apiToken" placeholder="API token" autofocus required />
     </div>
     <div class="control">
-      <input class="input field" type="text" name="groupId" placeholder="Id of group or layer" />
+      <input class="input field" type="text" name="groupId" placeholder="Id of group or layer" required />
     </div>
     <div class="control">
       <button class="button is-info" type="submit" name="submit">Test API</button>

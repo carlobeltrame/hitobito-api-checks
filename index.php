@@ -33,7 +33,9 @@ function getClassesFromDirectory($directory) {
   foreach ($files as $file) {
     require_once $file->getPathname();
   }
-  return array_diff(get_declared_classes(), $predeclaredClasses);
+  $classes = array_diff(get_declared_classes(), $predeclaredClasses);
+  sort($classes);
+  return $classes;
 };
 
 $curl = curl_init();

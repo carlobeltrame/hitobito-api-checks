@@ -11,7 +11,7 @@ class JsonResponse extends BaseAssertion {
       throw new AssertionFailedException(
         'Response body is not valid JSON.',
         'Valid JSON response.',
-        '<pre>' . $body . '</pre>'
+        self::wrap_in_pre($body)
       );
     }
   }

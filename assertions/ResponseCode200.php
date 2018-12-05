@@ -11,7 +11,7 @@ class ResponseCode200 extends BaseAssertion {
       throw new AssertionFailedException(
         'Unexpected response code.',
         '200 OK',
-        '<pre>' . var_export($responseCode, true). '</pre>'
+        self::wrap_in_pre(var_export($responseCode, true))
       );
     }
   }

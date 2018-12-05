@@ -59,6 +59,10 @@ abstract class BaseTest {
     return $this->responseBody;
   }
 
+  public function get_curl() {
+    return $this->curl;
+  }
+
   public abstract function perform();
 
   /**

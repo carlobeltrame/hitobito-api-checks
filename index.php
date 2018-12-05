@@ -54,7 +54,7 @@ $groupId = getParam('groupId');
           <input class="input field" type="text" name="groupId" value="<?=$groupId?>" placeholder="Id of group or layer" required />
         </div>
         <div class="control">
-          <button class="button is-info" type="submit" name="submit">Test API</button>
+          <button class="button is-info" type="submit">Test API</button>
         </div>
       </div>
     </form>

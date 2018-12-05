@@ -15,6 +15,10 @@
     body, button, input, select, textarea {
       font-family: "Source Sans Pro", BlinkMacSystemFont, -apple-system, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
     }
+
+    .panel-block div .title.is-6 {
+      margin-bottom: 5px;
+    }
   </style>
 </head>
 <body>

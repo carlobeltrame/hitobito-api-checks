@@ -73,9 +73,10 @@ $groupId = getParam('groupId');
         <?php
         foreach (getClassesFromDirectory('tests') as $testClass) {
           if (is_subclass_of($testClass, 'BaseTest')) {
-            /** @var BaseTest $testClass */
+            /** @var BaseTest $testInstance */
             $testInstance = new $testClass($hitobitoUrl, $apiToken, $groupId, $curl);
-            $testInstance();
+            $testInstance->evaluate();
+            $testInstance->render();
           }
         }
         ?>

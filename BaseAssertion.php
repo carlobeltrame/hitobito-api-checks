@@ -14,4 +14,8 @@ abstract class BaseAssertion {
    */
   abstract function __invoke(BaseTest $test);
 
+  static function wrap_in_pre(string $preformattedText) {
+    return '<pre>' . htmlspecialchars($preformattedText) . '</pre>';
+  }
+
 }

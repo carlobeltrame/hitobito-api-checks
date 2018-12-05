@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__.'/../BaseTest.php';
+
 class DummyTest extends BaseTest {
 
   public function __construct($url, $token, $tokenGroupId, $curl) {

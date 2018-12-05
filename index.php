@@ -23,8 +23,6 @@ function getParam($paramName) {
   return filter_input(INPUT_GET, $paramName) ?: '';
 };
 
-require_once 'BaseTest.php';
-
 function getClassesFromDirectory($directory) {
   $predeclaredClasses = get_declared_classes();
   $files = new FileSystemIterator($directory, FileSystemIterator::SKIP_DOTS);

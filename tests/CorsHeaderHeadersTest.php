@@ -4,10 +4,10 @@ require_once __DIR__.'/../BaseTest.php';
 require_once __DIR__.'/../assertions/ResponseCode200.php';
 require_once __DIR__.'/../assertions/CorsHeaderPresent.php';
 
-class CorsHeadersTest extends BaseTest {
+class CorsHeaderHeadersTest extends BaseTest {
 
   public function get_name() {
-    return 'CORS headers should be set correctly (headers style)';
+    return 'CORS header on API response (headers style)';
   }
 
   public function perform() {

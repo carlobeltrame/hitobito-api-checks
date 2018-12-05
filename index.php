@@ -19,24 +19,26 @@
 </head>
 <body>
 <?php
-$getParam = function ($paramName) {
+function getParam($paramName) {
   return filter_input(INPUT_GET, $paramName) ?: '';
 };
 
 require_once 'BaseTest.php';
 
-$getDirClasses = function ($dir) {
+function getClassesFromDirectory($directory) {
   $predeclaredClasses = get_declared_classes();
-  $i = new FileSystemIterator($dir, FileSystemIterator::SKIP_DOTS);
-  foreach ($i as $f) {
-    require_once $f->getPathname();
+  $files = new FileSystemIterator($directory, FileSystemIterator::SKIP_DOTS);
+  foreach ($files as $file) {
+    require_once $file->getPathname();
   }
   return array_diff(get_declared_classes(), $predeclaredClasses);
 };
 
-$hitobitoUrl = $getParam('hitobitoUrl');
-$apiToken = $getParam('apiToken');
-$groupId = $getParam('groupId');
+$curl = curl_init();
+
+$hitobitoUrl = getParam('hitobitoUrl');
+$apiToken = getParam('apiToken');
+$groupId = getParam('groupId');
 ?>
 <div class="container">
   <div class="section">
@@ -48,10 +50,10 @@ $groupId = $getParam('groupId');
                  value="<?= $hitobitoUrl ?: 'https://pbs.puzzle.ch' ?>" required />
         </div>
         <div class="control">
-          <input class="input field" type="text" name="apiToken" placeholder="API token" autofocus required />
+          <input class="input field" type="text" name="apiToken" value="<?=$apiToken?>" placeholder="API token" <?= $apiToken === '' ? 'autofocus ' : '' ?>required />
         </div>
         <div class="control">
-          <input class="input field" type="text" name="groupId" placeholder="Id of group or layer" required />
+          <input class="input field" type="text" name="groupId" value="<?=$groupId?>" placeholder="Id of group or layer" required />
         </div>
         <div class="control">
           <button class="button is-info" type="submit" name="submit">Test API</button>
@@ -59,25 +61,29 @@ $groupId = $getParam('groupId');
       </div>
     </form>
   </div>
-  <div class="section">
-    <section class="panel">
-      <p class="panel-heading">
-        Tests run
-      </p>
-      <p class="panel-tabs">
-        <a class="is-active">all</a>
-        <a>failed</a>
-        <a>successful</a>
-      </p>
-      <?php
-      foreach ($getDirClasses('tests') as $testClass) {
-        /** @var BaseTest $testClass */
-        $testClass = new $testClass($hitobitoUrl, $apiToken, $groupId);
-        $testClass();
-      }
-      ?>
-    </section>
-  </div>
+  <?php if ($hitobitoUrl && $apiToken && $groupId) : ?>
+    <div class="section">
+      <section class="panel">
+        <p class="panel-heading">
+          Tests run
+        </p>
+        <p class="panel-tabs">
+          <a class="is-active">all</a>
+          <a>failed</a>
+          <a>successful</a>
+        </p>
+        <?php
+        foreach (getClassesFromDirectory('tests') as $testClass) {
+          if (is_subclass_of($testClass, 'BaseTest')) {
+            /** @var BaseTest $testClass */
+            $testInstance = new $testClass($hitobitoUrl, $apiToken, $groupId, $curl);
+            $testInstance();
+          }
+        }
+        ?>
+      </section>
+    </div>
+  <?php endif; ?>
 </div>
 </body>
 </html>

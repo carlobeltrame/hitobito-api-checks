@@ -15,7 +15,7 @@
                  placeholder="Id of group or layer" required />
         </div>
         <div class="control">
-          <button class="button is-info" type="submit">Test API</button>
+          <button class="button is-info" type="submit" @click="runTests">Run tests</button>
         </div>
       </div>
     </div>
@@ -53,11 +53,35 @@ export default {
   name: 'app',
   data() {
     return {
-      tests: [{ name: 'Dummy test', success: true, message: '' }],
+      tests: [],
+      testNames: [],
       hitobitoUrl: 'https://pbs.puzzle.ch',
       apiToken: '',
       groupId: '',
-      displayTests: true
+      displayTests: false
+    }
+  },
+  created() {
+    this.$http.get('tests.php').then(result => {
+      this.testNames = result.data
+    })
+  },
+  methods: {
+    runTests() {
+      this.displayTests = true
+      this.runSingleTest(0)
+    },
+    runSingleTest(index) {
+      if (index >= this.testNames.length) return;
+      let url = new URL(window.location.href + 'tests.php');
+      url.searchParams.append('test', this.testNames[index])
+      url.searchParams.append('hitobitoUrl', this.hitobitoUrl)
+      url.searchParams.append('apiToken', this.apiToken)
+      url.searchParams.append('groupId', this.groupId)
+      this.$http.get(url.toString()).then(result => {
+        this.tests.push(result.data)
+        this.runSingleTest(index + 1)
+      })
     }
   }
 }

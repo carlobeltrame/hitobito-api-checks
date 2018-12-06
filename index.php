@@ -38,8 +38,6 @@ function getClassesFromDirectory($directory) {
   return $classes;
 };
 
-$curl = curl_init();
-
 $hitobitoUrl = getParam('hitobitoUrl');
 $apiToken = getParam('apiToken');
 $groupId = getParam('groupId');
@@ -80,7 +78,7 @@ $groupId = getParam('groupId');
         foreach (getClassesFromDirectory('tests') as $testClass) {
           if (is_subclass_of($testClass, 'BaseTest')) {
             /** @var BaseTest $testInstance */
-            $testInstance = new $testClass($hitobitoUrl, $apiToken, $groupId, $curl);
+            $testInstance = new $testClass($hitobitoUrl, $apiToken, $groupId);
             $testInstance->evaluate();
             $testInstance->render();
           }

@@ -13,11 +13,11 @@ abstract class BaseTest {
   protected $actual = '';
   protected $success = true;
 
-  public function __construct($url, $token, $tokenGroupId, $curl) {
+  public function __construct($url, $token, $tokenGroupId) {
     $this->url = $url;
     $this->token = $token;
     $this->groupId = $tokenGroupId;
-    $this->curl = $curl;
+    $this->curl = curl_init();
   }
 
   public function render() {

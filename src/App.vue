@@ -22,12 +22,12 @@
     <div v-if="displayTests" class="section">
       <section class="panel">
         <p class="panel-heading">
-          Tests run
+          Tests run ({{ tests.length }} out of {{ testNames.length }})
         </p>
         <p class="panel-tabs">
           <a class="is-active">all</a>
-          <a>failed</a>
-          <a>successful</a>
+          <a>failed ({{ numFailedTests }})</a>
+          <a>successful ({{ numSuccessfulTests }})</a>
         </p>
 
         <a class="panel-block" v-for="test in tests" :key="test.name">
@@ -65,6 +65,14 @@ export default {
     this.$http.get('tests.php').then(result => {
       this.testNames = result.data
     })
+  },
+  computed: {
+    numSuccessfulTests() {
+      return this.tests.filter(test => test.success).length
+    },
+    numFailedTests() {
+      return this.tests.filter(test => !test.success).length
+    }
   },
   methods: {
     runTests() {

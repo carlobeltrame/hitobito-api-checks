@@ -20,31 +20,6 @@ abstract class BaseTest {
     $this->curl = curl_init();
   }
 
-  public function render() {
-    echo '<a class="panel-block">';
-    if ($this->is_success()) {
-      echo '<span class="panel-icon has-text-success"><i class="fas fa-check-circle"></i></span>';
-    } else {
-      echo '<span class="panel-icon has-text-danger"><i class="fas fa-times-circle"></i></span>';
-    }
-    echo '<div>';
-    echo '<div class="title is-6">' . $this->get_name() . '</div>';
-
-    if ($this->success) {
-      echo 'Works as expected.';
-    } else {
-      echo $this->message;
-      if ($this->expected !== '') {
-        echo '<div><b>Expected:</b> ' . $this->expected . '</div>';
-      }
-      if ($this->actual !== '') {
-        echo '<div><b>Actual:</b> ' . $this->actual . '</div>';
-      }
-    }
-
-    echo '</div></a>';
-  }
-
   public abstract function get_name();
 
   public function is_success() {
@@ -70,7 +45,7 @@ abstract class BaseTest {
    */
   public abstract function get_assertions();
 
-  public function evaluate() {
+  public function test() {
     $this->success = true;
     try {
       $this->perform();
@@ -87,6 +62,13 @@ abstract class BaseTest {
       $this->success = false;
       $this->message = $e->getMessage();
     }
+    return [
+      'name' => $this->get_name(),
+      'success' => $this->is_success(),
+      'message' => $this->message,
+      'expected' => $this->expected,
+      'actual' => $this->actual,
+    ];
   }
 
   protected function do_get_with_headers_style($path) {

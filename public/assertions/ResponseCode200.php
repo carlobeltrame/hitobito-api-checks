@@ -1,8 +1,8 @@
 <?php
 
-require_once __DIR__.'/../BaseAssertion.php';
-require_once __DIR__.'/../BaseTest.php';
-require_once __DIR__.'/../AssertionFailedException.php';
+require_once __DIR__ . '/../BaseAssertion.php';
+require_once __DIR__ . '/../BaseTest.php';
+require_once __DIR__ . '/../AssertionFailedException.php';
 
 class ResponseCode200 extends BaseAssertion {
   public function __invoke(BaseTest $test) {
@@ -11,7 +11,7 @@ class ResponseCode200 extends BaseAssertion {
       throw new AssertionFailedException(
         'Unexpected response code.',
         '200 OK',
-        self::wrap_in_pre(var_export($responseCode, true))
+        var_export($responseCode, true)
       );
     }
   }

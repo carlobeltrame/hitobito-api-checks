@@ -1,9 +1,9 @@
 <?php
 
-require_once __DIR__.'/../BaseTest.php';
-require_once __DIR__.'/../assertions/ResponseCode200.php';
-require_once __DIR__.'/../assertions/JsonResponse.php';
-require_once __DIR__.'/../assertions/ContainsSingleGroupDetail.php';
+require_once __DIR__ . '/../BaseTest.php';
+require_once __DIR__ . '/../assertions/ResponseCode200.php';
+require_once __DIR__ . '/../assertions/JsonResponse.php';
+require_once __DIR__ . '/../assertions/ContainsSingleGroupDetail.php';
 
 class GroupDetailsHeadersTest extends BaseTest {
 

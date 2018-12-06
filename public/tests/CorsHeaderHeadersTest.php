@@ -1,8 +1,8 @@
 <?php
 
-require_once __DIR__.'/../BaseTest.php';
-require_once __DIR__.'/../assertions/ResponseCode200.php';
-require_once __DIR__.'/../assertions/CorsHeaderPresent.php';
+require_once __DIR__ . '/../BaseTest.php';
+require_once __DIR__ . '/../assertions/ResponseCode200.php';
+require_once __DIR__ . '/../assertions/CorsHeaderPresent.php';
 
 class CorsHeaderHeadersTest extends BaseTest {
 

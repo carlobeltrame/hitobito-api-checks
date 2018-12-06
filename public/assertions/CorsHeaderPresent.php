@@ -1,8 +1,8 @@
 <?php
 
-require_once __DIR__.'/../BaseAssertion.php';
-require_once __DIR__.'/../BaseTest.php';
-require_once __DIR__.'/../AssertionFailedException.php';
+require_once __DIR__ . '/../BaseAssertion.php';
+require_once __DIR__ . '/../BaseTest.php';
+require_once __DIR__ . '/../AssertionFailedException.php';
 
 class CorsHeaderPresent extends BaseAssertion {
   public function __invoke(BaseTest $test) {

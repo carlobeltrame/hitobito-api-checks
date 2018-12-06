@@ -1,8 +1,8 @@
 <?php
 
-require_once __DIR__.'/../BaseAssertion.php';
-require_once __DIR__.'/../BaseTest.php';
-require_once __DIR__.'/../AssertionFailedException.php';
+require_once __DIR__ . '/../BaseAssertion.php';
+require_once __DIR__ . '/../BaseTest.php';
+require_once __DIR__ . '/../AssertionFailedException.php';
 
 class JsonResponse extends BaseAssertion {
   public function __invoke(BaseTest $test) {
@@ -11,7 +11,7 @@ class JsonResponse extends BaseAssertion {
       throw new AssertionFailedException(
         'Response body is not valid JSON.',
         'Valid JSON response.',
-        self::wrap_in_pre($body)
+        $body
       );
     }
   }

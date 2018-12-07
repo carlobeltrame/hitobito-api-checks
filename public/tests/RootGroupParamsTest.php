@@ -1,18 +1,18 @@
 <?php
 
-require_once __DIR__ . '/../BaseTest.php';
+require_once __DIR__ . '/../ParamsTest.php';
 require_once __DIR__ . '/../assertions/ResponseCode200.php';
 require_once __DIR__ . '/../assertions/JsonResponse.php';
 require_once __DIR__ . '/../assertions/ContainsSingleGroupDetail.php';
 
-class RootGroupParamsTest extends BaseTest {
+class RootGroupParamsTest extends ParamsTest {
 
   public function get_name() {
-    return 'Get root group details (parameters style)';
+    return 'Get root group details (' . parent::get_name() . ')';
   }
 
   public function perform() {
-    $this->do_get_with_parameters_style('/groups');
+    $this->do_get_request('/groups');
   }
 
   /**

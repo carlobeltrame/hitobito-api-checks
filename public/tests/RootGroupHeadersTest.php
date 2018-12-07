@@ -1,18 +1,18 @@
 <?php
 
-require_once __DIR__ . '/../BaseTest.php';
+require_once __DIR__ . '/../HeadersTest.php';
 require_once __DIR__ . '/../assertions/ResponseCode200.php';
 require_once __DIR__ . '/../assertions/JsonResponse.php';
 require_once __DIR__ . '/../assertions/ContainsSingleGroupDetail.php';
 
-class RootGroupHeadersTest extends BaseTest {
+class RootGroupHeadersTest extends HeadersTest {
 
   public function get_name() {
-    return 'Get root group details (headers style)';
+    return 'Get root group details (' . parent::get_name() . ')';
   }
 
   public function perform() {
-    $this->do_get_with_headers_style('/groups');
+    $this->do_get_request('/groups');
   }
 
   /**

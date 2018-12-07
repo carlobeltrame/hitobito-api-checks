@@ -73,15 +73,6 @@ abstract class BaseTest {
     ];
   }
 
-  protected function do_get_with_headers_style($path) {
-    return $this->do_get_request($path, ['Accept: application/json', 'X-Token: ' . $this->token]);
-  }
-
-  protected function do_get_with_parameters_style($path, $queryParams = []) {
-    $query = implode(array_map(function($param, $value) { return '&' . $param . '=' . $value; }, array_keys($queryParams), $queryParams));
-    return $this->do_get_request($path . '.json?token=' . $this->token . $query);
-  }
-
   protected function do_get_request($path, $headers = []) {
 
     $url = $this->url . $path;

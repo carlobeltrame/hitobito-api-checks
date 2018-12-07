@@ -36,7 +36,12 @@
           <span v-else class="panel-icon has-text-danger"><i class="fas fa-times-circle"></i></span>
           <div>
             <div class="title is-6">{{ test.name }}</div>
-            <span v-if="test.success">Works as expected.</span>
+            <span v-if="test.success">
+              Works as expected.
+              <div v-if="test.reproduce"><b>Steps to reproduce:</b>
+                <pre class="reproduce" v-for="(step, index) in test.reproduce" :key="index"><div v-for="(line, lineindex) in step" :key="lineindex">{{ line }}</div></pre>
+              </div>
+            </span>
             <span v-else>
               {{ test.message }}
               <div v-if="test.reproduce"><b>Steps to reproduce:</b>

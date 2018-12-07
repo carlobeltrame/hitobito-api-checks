@@ -42,10 +42,14 @@ abstract class BaseTest {
   /**
    * Perform any necessary preparations for the test. This can include gathering information via API calls. Requests in
    * this method will not be logged to the reproduction instructions.
+   * This method should also evaluate whether the test is applicable to the given inputs (token, group, permissions,
+   * ...) and return false if it isn't.
    *
-   * @return void
+   * @return bool true if the test is applicable and should be run, false otherwise.
    */
-  public function given() {}
+  public function given() {
+    return true;
+  }
 
   /**
    * Perform the action on the API which should be tested. This will include at least one API call normally. All API
@@ -65,25 +69,18 @@ abstract class BaseTest {
   public function test() {
     $this->success = true;
     try {
-      $this->given();
+      if (!$this->given()) {
+        return $this->to_response(true, [], 'Test is not applicable to setup.');
+      }
     } catch (Exception $e) {
-      $this->success = false;
-      $this->message = 'Test setup failed: ' . $e->getMessage();
-      $this->expected = '';
-      $this->actual = '';
-      $this->reproduce = [];
-      return $this->to_response();
+      return $this->to_response(false, $this->reproduce, 'Test setup failed: ' . $e->getMessage());
     }
-    // Reset reproduction steps
+    // Reset reproduction steps so only the ones in when() are shown
     $this->reproduce = [];
     try {
       $this->when();
     } catch (Exception $e) {
-      $this->success = false;
-      $this->message = 'Test execution failed: ' . $e->getMessage();
-      $this->expected = '';
-      $this->actual = '';
-      return $this->to_response();
+      return $this->to_response(false, $this->reproduce, 'Test execution failed: ' . $e->getMessage());
     }
     try {
       foreach ($this->then() as $assertion) {
@@ -91,27 +88,21 @@ abstract class BaseTest {
         $assertion($this);
       }
     } catch (AssertionFailedException $e) {
-      $this->success = false;
-      $this->message = $e->getMessage();
-      $this->expected = $e->get_expected();
-      $this->actual = $e->get_actual();
+      return $this->to_response(false, $this->reproduce, $e->getMessage(), $e->get_expected(), $e->get_actual());
     } catch (Exception $e) {
-      $this->success = false;
-      $this->message = 'Assertion failed. ' . $e->getMessage();
-      $this->expected = '';
-      $this->actual = '';
+      return $this->to_response(false, $this->reproduce, 'Assertion failed. ' . $e->getMessage());
     }
-    return $this->to_response();
+    return $this->to_response(true, $this->reproduce);
   }
 
-  protected function to_response() {
+  protected function to_response($success, $reproduce = [], $message = '', $expected = '', $actual = '') {
     return [
       'name' => $this->get_name(),
-      'success' => $this->is_success(),
-      'message' => $this->message,
-      'expected' => $this->expected,
-      'actual' => $this->actual,
-      'reproduce' => $this->reproduce,
+      'success' => $success,
+      'reproduce' => $reproduce,
+      'message' => $message,
+      'expected' => $expected,
+      'actual' => $actual,
     ];
   }
 

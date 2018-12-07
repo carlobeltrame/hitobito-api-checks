@@ -18,6 +18,7 @@ class ParentGroupByIdParamsTest extends ParamsTest {
     parent::given();
     $this->do_get_request('/groups/' . $this->groupId);
     $this->parentId = json_decode($this->responseBody)->groups[0]->links->parent;
+    return !!$this->parentId;
   }
 
   public function when() {

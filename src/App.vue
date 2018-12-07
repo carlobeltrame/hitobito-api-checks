@@ -38,13 +38,13 @@
             <div class="title is-6">{{ test.name }}</div>
             <span v-if="test.success">
               Works as expected.
-              <div v-if="test.reproduce"><b>Steps to reproduce:</b>
+              <div v-if="test.reproduce && test.reproduce.length"><b>Steps to reproduce:</b>
                 <pre class="reproduce" v-for="(step, index) in test.reproduce" :key="index"><div v-for="(line, lineindex) in step" :key="lineindex">{{ line }}</div></pre>
               </div>
             </span>
             <span v-else>
               {{ test.message }}
-              <div v-if="test.reproduce"><b>Steps to reproduce:</b>
+              <div v-if="test.reproduce && test.reproduce.length"><b>Steps to reproduce:</b>
                 <pre class="reproduce" v-for="(step, index) in test.reproduce" :key="index"><div v-for="(line, lineindex) in step" :key="lineindex">{{ line }}</div></pre>
               </div>
               <div v-if="test.expected"><b>Expected:</b> {{ test.expected }}</div>

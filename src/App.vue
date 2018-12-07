@@ -5,18 +5,17 @@
       <form @submit.prevent="runTests">
         <div class="field has-addons">
           <div class="control">
-            <input class="input field" type="url" name="hitobitoUrl" v-model="hitobitoUrl" required />
+            <input class="input field" type="url" name="hitobitoUrl" v-model="hitobitoUrl" placeholder="Hitobito URL" required />
           </div>
           <div class="control">
-            <input class="input field" type="text" name="apiToken" v-model="apiToken"
-                   placeholder="API token" :autofocus="apiToken === ''" required />
+            <input class="input field" type="text" name="apiToken" v-model="apiToken" placeholder="API token" />
           </div>
           <div class="control">
             <input class="input field" type="text" name="groupId" v-model="groupId"
                    placeholder="Id of group or layer" required />
           </div>
           <div class="control">
-            <button class="button is-info" type="submit">Run tests</button>
+            <button class="button is-info" type="submit">Run {{ testNames.length }} tests</button>
           </div>
         </div>
       </form>
@@ -40,11 +39,11 @@
             <span v-if="test.success">Works as expected.</span>
             <span v-else>
               {{ test.message }}
-              <div v-if="test.expected"><b>Expected:</b> {{ test.expected }}</div>
-              <div v-if="test.actual"><b>Actual:</b> {{ test.actual }}</div>
               <div v-if="test.reproduce"><b>Steps to reproduce:</b>
                 <pre class="reproduce" v-for="(step, index) in test.reproduce" :key="index"><div v-for="(line, lineindex) in step" :key="lineindex">{{ line }}</div></pre>
               </div>
+              <div v-if="test.expected"><b>Expected:</b> {{ test.expected }}</div>
+              <div v-if="test.actual"><b>Actual:</b> {{ test.actual }}</div>
             </span>
           </div>
         </a>
@@ -60,13 +59,17 @@ export default {
     return {
       tests: [],
       testNames: [],
-      hitobitoUrl: 'https://pbs.puzzle.ch',
+      hitobitoUrl: '',
       apiToken: '',
       groupId: '',
       displayTests: false
     }
   },
   created() {
+    const urlParams = new URLSearchParams(window.location.search)
+    this.hitobitoUrl = urlParams.get('hitobitoUrl') || 'https://pbs.puzzle.ch'
+    this.apiToken = urlParams.get('apiToken')
+    this.groupId = urlParams.get('groupId')
     this.$http.get('tests.php').then(result => {
       this.testNames = result.data
     })
@@ -81,21 +84,27 @@ export default {
   },
   methods: {
     runTests() {
+      const url = new URL(window.location.href)
+      this.setQueryParams(url)
+      window.history.pushState({hitobitoUrl: this.hitobitoUrl, apiToken: this.apiToken, groupId: this.groupId}, document.title, url.toString());
       this.displayTests = true
       this.tests = []
       this.runSingleTest(0)
     },
     runSingleTest(index) {
       if (index >= this.testNames.length) return;
-      let url = new URL(window.location.href + 'tests.php');
-      url.searchParams.append('test', this.testNames[index])
-      url.searchParams.append('hitobitoUrl', this.hitobitoUrl)
-      url.searchParams.append('apiToken', this.apiToken)
-      url.searchParams.append('groupId', this.groupId)
+      let url = new URL(window.location.protocol + '//' + window.location.host + window.location.pathname + 'tests.php');
+      url.searchParams.set('test', this.testNames[index])
+      this.setQueryParams(url)
       this.$http.get(url.toString()).then(result => {
         this.tests.push(result.data)
         this.runSingleTest(index + 1)
       })
+    },
+    setQueryParams(url) {
+      url.searchParams.set('hitobitoUrl', this.hitobitoUrl)
+      url.searchParams.set('apiToken', this.apiToken)
+      url.searchParams.set('groupId', this.groupId)
     }
   }
 }

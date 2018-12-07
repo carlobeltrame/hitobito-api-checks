@@ -77,6 +77,7 @@ export default {
   methods: {
     runTests() {
       this.displayTests = true
+      this.tests = []
       this.runSingleTest(0)
     },
     runSingleTest(index) {

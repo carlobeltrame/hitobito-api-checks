@@ -11,14 +11,11 @@ class GroupByIdHeadersTest extends HeadersTest {
     return 'Get group details of token\'s group (' . parent::get_name() . ')';
   }
 
-  public function perform() {
+  public function when() {
     $this->do_get_request('/groups/' . $this->groupId);
   }
 
-  /**
-   * @return array
-   */
-  public function get_assertions() {
+  public function then() {
     return [
       new ResponseCode200(),
       new JsonResponse(),

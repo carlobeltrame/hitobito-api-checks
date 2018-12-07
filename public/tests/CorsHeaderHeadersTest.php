@@ -10,14 +10,11 @@ class CorsHeaderHeadersTest extends HeadersTest {
     return 'CORS header on API response (' . parent::get_name() . ')';
   }
 
-  public function perform() {
+  public function when() {
     $this->do_get_request('/groups/' . $this->groupId);
   }
 
-  /**
-   * @return array
-   */
-  public function get_assertions() {
+  public function then() {
     return [
       new ResponseCode200(),
       new CorsHeaderPresent(),

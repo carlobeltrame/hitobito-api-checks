@@ -12,14 +12,11 @@ class RootGroupByIdParamsTest extends ParamsTest {
     return 'Get root group details by specifying id (' . parent::get_name() . ')';
   }
 
-  public function perform() {
+  public function when() {
     $this->do_get_request('/groups/1');
   }
 
-  /**
-   * @return array
-   */
-  public function get_assertions() {
+  public function then() {
     // If the token is on the root group, we should be granted access
     if ($this->groupId === '1') {
       return [

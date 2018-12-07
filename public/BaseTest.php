@@ -39,18 +39,54 @@ abstract class BaseTest {
     return $this->curl;
   }
 
-  public abstract function perform();
+  /**
+   * Perform any necessary preparations for the test. This can include gathering information via API calls. Requests in
+   * this method will not be logged to the reproduction instructions.
+   *
+   * @return void
+   */
+  public function given() {}
 
   /**
+   * Perform the action on the API which should be tested. This will include at least one API call normally. All API
+   * calls via do_get_request are logged automatically to the reproduction instructions.
+   *
+   * @return void
+   */
+  public abstract function when();
+
+  /**
+   * Returns an array of BaseAssertion instances. All assertions will be evaluated in order.
+   *
    * @return array
    */
-  public abstract function get_assertions();
+  public abstract function then();
 
   public function test() {
     $this->success = true;
     try {
-      $this->perform();
-      foreach ($this->get_assertions() as $assertion) {
+      $this->given();
+    } catch (Exception $e) {
+      $this->success = false;
+      $this->message = 'Test setup failed: ' . $e->getMessage();
+      $this->expected = '';
+      $this->actual = '';
+      $this->reproduce = [];
+      return $this->to_response();
+    }
+    // Reset reproduction steps
+    $this->reproduce = [];
+    try {
+      $this->when();
+    } catch (Exception $e) {
+      $this->success = false;
+      $this->message = 'Test execution failed: ' . $e->getMessage();
+      $this->expected = '';
+      $this->actual = '';
+      return $this->to_response();
+    }
+    try {
+      foreach ($this->then() as $assertion) {
         /** @var $assertion BaseAssertion */
         $assertion($this);
       }
@@ -61,10 +97,14 @@ abstract class BaseTest {
       $this->actual = $e->get_actual();
     } catch (Exception $e) {
       $this->success = false;
-      $this->message = $e->getMessage();
+      $this->message = 'Assertion failed. ' . $e->getMessage();
       $this->expected = '';
       $this->actual = '';
     }
+    return $this->to_response();
+  }
+
+  protected function to_response() {
     return [
       'name' => $this->get_name(),
       'success' => $this->is_success(),

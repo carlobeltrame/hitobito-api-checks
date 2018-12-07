@@ -11,14 +11,11 @@ class RootGroupParamsTest extends ParamsTest {
     return 'Get root group details (' . parent::get_name() . ')';
   }
 
-  public function perform() {
+  public function when() {
     $this->do_get_request('/groups');
   }
 
-  /**
-   * @return array
-   */
-  public function get_assertions() {
+  public function then() {
     return [
       new ResponseCode200(),
       new JsonResponse(),

@@ -14,16 +14,17 @@ class ParentGroupByIdHeadersTest extends HeadersTest {
     return 'Get group details of parent of token\'s group (' . parent::get_name() . ')';
   }
 
-  public function perform() {
+  public function given() {
+    parent::given();
     $this->do_get_request('/groups/' . $this->groupId);
     $this->parentId = json_decode($this->responseBody)->groups[0]->links->parent;
+  }
+
+  public function when() {
     $this->do_get_request('/groups/' . $this->parentId);
   }
 
-  /**
-   * @return array
-   */
-  public function get_assertions() {
+  public function then() {
     return [
       new ResponseCode200(),
       new JsonResponse(),

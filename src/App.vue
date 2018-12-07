@@ -2,22 +2,24 @@
   <div class="container">
     <div class="section">
       <header class="title">Hitobito API tester</header>
-      <div class="field has-addons">
-        <div class="control">
-          <input class="input field" type="url" name="hitobitoUrl" v-model="hitobitoUrl" required />
+      <form @submit.prevent="runTests">
+        <div class="field has-addons">
+          <div class="control">
+            <input class="input field" type="url" name="hitobitoUrl" v-model="hitobitoUrl" required />
+          </div>
+          <div class="control">
+            <input class="input field" type="text" name="apiToken" v-model="apiToken"
+                   placeholder="API token" :autofocus="apiToken === ''" required />
+          </div>
+          <div class="control">
+            <input class="input field" type="text" name="groupId" v-model="groupId"
+                   placeholder="Id of group or layer" required />
+          </div>
+          <div class="control">
+            <button class="button is-info" type="submit">Run tests</button>
+          </div>
         </div>
-        <div class="control">
-          <input class="input field" type="text" name="apiToken" v-model="apiToken"
-                 placeholder="API token" :autofocus="apiToken === ''" required />
-        </div>
-        <div class="control">
-          <input class="input field" type="text" name="groupId" v-model="groupId"
-                 placeholder="Id of group or layer" required />
-        </div>
-        <div class="control">
-          <button class="button is-info" type="submit" @click="runTests">Run tests</button>
-        </div>
-      </div>
+      </form>
     </div>
     <div v-if="displayTests" class="section">
       <section class="panel">

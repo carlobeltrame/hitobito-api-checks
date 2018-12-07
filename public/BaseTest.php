@@ -62,6 +62,8 @@ abstract class BaseTest {
     } catch (Exception $e) {
       $this->success = false;
       $this->message = $e->getMessage();
+      $this->expected = '';
+      $this->actual = '';
     }
     return [
       'name' => $this->get_name(),

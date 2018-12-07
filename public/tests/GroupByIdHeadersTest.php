@@ -5,7 +5,7 @@ require_once __DIR__ . '/../assertions/ResponseCode200.php';
 require_once __DIR__ . '/../assertions/JsonResponse.php';
 require_once __DIR__ . '/../assertions/ContainsSingleGroupDetail.php';
 
-class GroupDetailsHeadersTest extends HeadersTest {
+class GroupByIdHeadersTest extends HeadersTest {
 
   public function get_name() {
     return 'Get group details of token\'s group (' . parent::get_name() . ')';

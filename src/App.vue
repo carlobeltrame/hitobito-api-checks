@@ -27,7 +27,7 @@
         </p>
         <p class="panel-tabs">
           <a :class="statusFilter === '' ? 'is-active' : ''" @click="filterByStatus('')">all ({{ numTests }})</a>
-          <a :class="statusFilter === 'not_run' ? 'is-active' : ''" @click="filterByStatus('not_run')">not run ({{ numNotRunTests }})</a>
+          <a :class="statusFilter === 'not_run' ? 'is-active' : ''" @click="filterByStatus('not_run')">queued ({{ numNotRunTests }})</a>
           <a :class="statusFilter === 'success' ? 'is-active' : ''" @click="filterByStatus('success')">successful ({{ numSuccessfulTests }})</a>
           <a :class="statusFilter === 'fail' ? 'is-active' : ''" @click="filterByStatus('fail')">failed ({{ numFailedTests }})</a>
           <a :class="statusFilter === 'not_applicable' ? 'is-active' : ''" @click="filterByStatus('not_applicable')">not applicable ({{ numNotApplicableTests }})</a>
@@ -37,7 +37,7 @@
           <span v-if="test.status === 'success'" class="panel-icon has-text-success"><i class="fas fa-check-circle"></i></span>
           <span v-else-if="test.status === 'fail'" class="panel-icon has-text-danger"><i class="fas fa-times-circle"></i></span>
           <span v-else-if="test.status === 'not_applicable'" class="panel-icon has-text-grey-light"><i class="fas fa-ban"></i></span>
-          <span v-else-if="test.status === 'not_run'" class="panel-icon"></span>
+          <span v-else-if="test.status === 'not_run'" class="panel-icon"><i class="fas fa-stop"></i></span>
           <span v-else-if="test.status === 'running'" class="panel-icon has-text-info"><i class="fas fa-spinner fa-spin"></i></span>
           <div>
             <div class="title is-6">{{ test.name }}</div>

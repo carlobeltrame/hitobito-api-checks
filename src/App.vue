@@ -26,12 +26,14 @@
           Tests run ({{ numCompletedTests }} out of {{ numTests }})
         </p>
         <p class="panel-tabs">
-          <a class="is-active">all</a>
-          <a>failed ({{ numFailedTests }})</a>
-          <a>successful ({{ numSuccessfulTests }})</a>
+          <a :class="statusFilter === '' ? 'is-active' : ''" @click="filterByStatus('')">all ({{ numTests }})</a>
+          <a :class="statusFilter === 'not_run' ? 'is-active' : ''" @click="filterByStatus('not_run')">not run ({{ numNotRunTests }})</a>
+          <a :class="statusFilter === 'success' ? 'is-active' : ''" @click="filterByStatus('success')">successful ({{ numSuccessfulTests }})</a>
+          <a :class="statusFilter === 'fail' ? 'is-active' : ''" @click="filterByStatus('fail')">failed ({{ numFailedTests }})</a>
+          <a :class="statusFilter === 'not_applicable' ? 'is-active' : ''" @click="filterByStatus('not_applicable')">not applicable ({{ numNotApplicableTests }})</a>
         </p>
 
-        <a class="panel-block" v-for="test in tests" :key="test.name">
+        <a class="panel-block" v-for="test in filteredTests" :key="test.name">
           <span v-if="test.status === 'success'" class="panel-icon has-text-success"><i class="fas fa-check-circle"></i></span>
           <span v-else-if="test.status === 'fail'" class="panel-icon has-text-danger"><i class="fas fa-times-circle"></i></span>
           <span v-else-if="test.status === 'not_applicable'" class="panel-icon has-text-grey-light"><i class="fas fa-ban"></i></span>
@@ -78,7 +80,8 @@ export default {
       tests: [],
       hitobitoUrl: '',
       apiToken: '',
-      groupId: ''
+      groupId: '',
+      statusFilter: '',
     }
   },
   created() {
@@ -102,6 +105,15 @@ export default {
     },
     numFailedTests() {
       return this.tests.filter(test => test.status === 'fail').length
+    },
+    numNotRunTests() {
+      return this.tests.filter(test => test.status === 'not_run').length
+    },
+    numNotApplicableTests() {
+      return this.tests.filter(test => test.status === 'not_applicable').length
+    },
+    filteredTests() {
+      return this.tests.filter(test => test.status === this.statusFilter || this.statusFilter === '')
     }
   },
   methods: {
@@ -139,6 +151,9 @@ export default {
       url.searchParams.set('hitobitoUrl', this.hitobitoUrl)
       url.searchParams.set('apiToken', this.apiToken)
       url.searchParams.set('groupId', this.groupId)
+    },
+    filterByStatus(status) {
+      this.statusFilter = status
     }
   }
 }

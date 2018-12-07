@@ -1,10 +1,14 @@
 <?php
 
+require_once __DIR__ . '/TestNotApplicableException.php';
+require_once __DIR__ . '/AssertionFailedException.php';
+
 abstract class BaseTest {
 
   protected $url;
   protected $token;
   protected $groupId;
+  protected $path;
   protected $curl;
   protected $responseHeaders = [];
   protected $responseBody = null;
@@ -14,10 +18,11 @@ abstract class BaseTest {
   protected $reproduce = [];
   protected $success = true;
 
-  public function __construct($url, $token, $tokenGroupId) {
+  public function __construct($url, $token, $tokenGroupId, $path) {
     $this->url = $url;
     $this->token = $token;
     $this->groupId = $tokenGroupId;
+    $this->path = $path;
     $this->curl = curl_init();
   }
 
@@ -43,13 +48,12 @@ abstract class BaseTest {
    * Perform any necessary preparations for the test. This can include gathering information via API calls. Requests in
    * this method will not be logged to the reproduction instructions.
    * This method should also evaluate whether the test is applicable to the given inputs (token, group, permissions,
-   * ...) and return false if it isn't.
+   * ...) and throw TestNotApplicableException if it isn't.
    *
-   * @return bool true if the test is applicable and should be run, false otherwise.
+   * @return void
+   * @throws TestNotApplicableException when the test is not applicable to the given input configuration.
    */
-  public function given() {
-    return true;
-  }
+  public function given() {}
 
   /**
    * Perform the action on the API which should be tested. This will include at least one API call normally. All API
@@ -69,18 +73,18 @@ abstract class BaseTest {
   public function test() {
     $this->success = true;
     try {
-      if (!$this->given()) {
-        return $this->to_response(true, [], 'Test is not applicable to setup.');
-      }
+      $this->given();
+    } catch (TestNotApplicableException $e) {
+      return $this->to_response('not_applicable', [], $e->getMessage());
     } catch (Exception $e) {
-      return $this->to_response(false, $this->reproduce, 'Test setup failed: ' . $e->getMessage());
+      return $this->to_response('fail', $this->reproduce, 'Test setup failed: ' . $e->getMessage());
     }
     // Reset reproduction steps so only the ones in when() are shown
     $this->reproduce = [];
     try {
       $this->when();
     } catch (Exception $e) {
-      return $this->to_response(false, $this->reproduce, 'Test execution failed: ' . $e->getMessage());
+      return $this->to_response('fail', $this->reproduce, 'Test execution failed: ' . $e->getMessage());
     }
     try {
       foreach ($this->then() as $assertion) {
@@ -88,17 +92,18 @@ abstract class BaseTest {
         $assertion($this);
       }
     } catch (AssertionFailedException $e) {
-      return $this->to_response(false, $this->reproduce, $e->getMessage(), $e->get_expected(), $e->get_actual());
+      return $this->to_response('fail', $this->reproduce, $e->getMessage(), $e->get_expected(), $e->get_actual());
     } catch (Exception $e) {
-      return $this->to_response(false, $this->reproduce, 'Assertion failed. ' . $e->getMessage());
+      return $this->to_response('fail', $this->reproduce, 'Assertion failed. ' . $e->getMessage());
     }
-    return $this->to_response(true, $this->reproduce);
+    return $this->to_response('success', $this->reproduce);
   }
 
-  protected function to_response($success, $reproduce = [], $message = '', $expected = '', $actual = '') {
+  protected function to_response($status, $reproduce = [], $message = '', $expected = '', $actual = '') {
     return [
       'name' => $this->get_name(),
-      'success' => $success,
+      'path' => $this->path,
+      'status' => $status,
       'reproduce' => $reproduce,
       'message' => $message,
       'expected' => $expected,

@@ -14,7 +14,7 @@ function getClassesFromDirectory($directory) {
   return $classes;
 };
 
-$test = filter_input(INPUT_GET, 'test');
+$test = getParam('test');
 $hitobitoUrl = getParam('hitobitoUrl');
 $apiToken = getParam('apiToken');
 $groupId = getParam('groupId');
@@ -29,7 +29,7 @@ if ($test && $hitobitoUrl && $apiToken && $groupId) {
     require_once $test;
     $classname = basename($test, '.php');
     /** @var BaseTest $testObject */
-    $testObject = new $classname($hitobitoUrl, $apiToken, $groupId);
+    $testObject = new $classname($hitobitoUrl, $apiToken, $groupId, $test);
     echo json_encode($testObject->test());
 
     return;

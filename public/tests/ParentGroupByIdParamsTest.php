@@ -5,6 +5,7 @@ require_once __DIR__ . '/../assertions/ResponseCode200.php';
 require_once __DIR__ . '/../assertions/JsonResponse.php';
 require_once __DIR__ . '/../assertions/ContainsSingleGroupDetail.php';
 require_once __DIR__ . '/../assertions/Not.php';
+require_once __DIR__ . '/../TestNotApplicableException.php';
 
 class ParentGroupByIdParamsTest extends ParamsTest {
 
@@ -18,7 +19,9 @@ class ParentGroupByIdParamsTest extends ParamsTest {
     parent::given();
     $this->do_get_request('/groups/' . $this->groupId);
     $this->parentId = json_decode($this->responseBody)->groups[0]->links->parent;
-    return !!$this->parentId;
+    if (!$this->parentId) {
+      throw new TestNotApplicableException('Token\'s group has no parent because it is the root group.');
+    }
   }
 
   public function when() {

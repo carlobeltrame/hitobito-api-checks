@@ -8,7 +8,7 @@ require_once __DIR__ . '/../assertions/ContainsSingleGroupDetail.php';
 class GroupDetailsParamsTest extends BaseTest {
 
   public function get_name() {
-    return 'GET /groups/{id} (parameters style)';
+    return 'Get group details of token\'s group (parameters style)';
   }
 
   public function perform() {

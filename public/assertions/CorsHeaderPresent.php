@@ -10,7 +10,7 @@ class CorsHeaderPresent extends BaseAssertion {
     if (!isset($headers['access-control-allow-origin'])) {
       throw new AssertionFailedException(
         'Access-Control-Allow-Origin header was missing on the response.',
-        'Access-Control-Allow-Origin: &lt;caller domain if allowed&gt;'
+        'Access-Control-Allow-Origin: <caller domain if allowed>'
       );
     }
   }

@@ -11,6 +11,7 @@ abstract class BaseTest {
   protected $message = '';
   protected $expected = '';
   protected $actual = '';
+  protected $reproduce = [];
   protected $success = true;
 
   public function __construct($url, $token, $tokenGroupId) {
@@ -68,6 +69,7 @@ abstract class BaseTest {
       'message' => $this->message,
       'expected' => $this->expected,
       'actual' => $this->actual,
+      'reproduce' => $this->reproduce,
     ];
   }
 
@@ -82,7 +84,8 @@ abstract class BaseTest {
 
   protected function do_get_request($path, $headers = []) {
 
-    curl_setopt($this->curl, CURLOPT_URL, $this->url . $path);
+    $url = $this->url . $path;
+    curl_setopt($this->curl, CURLOPT_URL, $url);
     curl_setopt($this->curl, CURLOPT_HTTPHEADER, $headers);
 
     curl_setopt($this->curl, CURLOPT_FOLLOWLOCATION, true);
@@ -105,6 +108,9 @@ abstract class BaseTest {
         return $len;
       }
     );
+
+    $reproduceStep = array_merge([ "GET $url" ], $headers);
+    $this->reproduce[] = $reproduceStep;
 
     $this->responseBody = curl_exec($this->curl);
 

@@ -42,6 +42,9 @@
               {{ test.message }}
               <div v-if="test.expected"><b>Expected:</b> {{ test.expected }}</div>
               <div v-if="test.actual"><b>Actual:</b> {{ test.actual }}</div>
+              <div v-if="test.reproduce"><b>Steps to reproduce:</b>
+                <pre class="reproduce" v-for="(step, index) in test.reproduce" :key="index"><div v-for="(line, lineindex) in step" :key="lineindex">{{ line }}</div></pre>
+              </div>
             </span>
           </div>
         </a>
@@ -107,5 +110,14 @@ export default {
 
   .panel-block div .title.is-6 {
     margin-bottom: 5px;
+  }
+
+  pre.reproduce {
+    padding: 5px;
+    margin-bottom: 5px;
+  }
+
+  .panel-block div {
+    width: 100%;
   }
 </style>

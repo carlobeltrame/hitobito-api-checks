@@ -104,6 +104,16 @@ export default {
       this.$http.get(url.toString()).then(result => {
         this.tests.push(result.data)
         this.runSingleTest(index + 1)
+      }).catch(error => {
+        this.tests.push({
+          name: this.testNames[index],
+          success: false,
+          message: 'Server side error while running test. ' + error.response.data,
+          expected: '',
+          actual: '',
+          reproduce: ''
+        })
+        this.runSingleTest(index + 1)
       })
     },
     setQueryParams(url) {

@@ -4,6 +4,7 @@ require_once __DIR__ . '/../ParamsTest.php';
 require_once __DIR__ . '/../assertions/ResponseCode200.php';
 require_once __DIR__ . '/../assertions/JsonResponse.php';
 require_once __DIR__ . '/../assertions/ContainsSinglePersonDetail.php';
+require_once __DIR__ . '/../assertions/SinglePersonHasRoleInGroup.php';
 
 class PersonByIdParamsTest extends ParamsTest {
 
@@ -56,6 +57,7 @@ class PersonByIdParamsTest extends ParamsTest {
       new ResponseCode200(),
       new JsonResponse(),
       new ContainsSinglePersonDetail($this->personId),
+      new SinglePersonHasRoleInGroup($this->personGroupId),
     ];
   }
 }

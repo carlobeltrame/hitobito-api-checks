@@ -4,6 +4,7 @@ require_once __DIR__ . '/../HeadersTest.php';
 require_once __DIR__ . '/../assertions/ResponseCode200.php';
 require_once __DIR__ . '/../assertions/JsonResponse.php';
 require_once __DIR__ . '/../assertions/ContainsSingleGroupDetail.php';
+require_once __DIR__ . '/../assertions/Not.php';
 
 class GroupByIdHeadersTest extends HeadersTest {
 
@@ -16,10 +17,18 @@ class GroupByIdHeadersTest extends HeadersTest {
   }
 
   public function then() {
-    return [
-      new ResponseCode200(),
-      new JsonResponse(),
-      new ContainsSingleGroupDetail($this->groupId),
-    ];
+    if ($this->groupsPermission) {
+      return [
+        new ResponseCode200(),
+        new JsonResponse(),
+        new ContainsSingleGroupDetail($this->groupId),
+      ];
+    } else {
+      return [
+        new ResponseCode200(),
+        new JsonResponse(),
+        new Not(new ContainsSingleGroupDetail($this->groupId))
+      ];
+    }
   }
 }

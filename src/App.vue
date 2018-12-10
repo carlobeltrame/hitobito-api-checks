@@ -3,20 +3,34 @@
     <div class="section">
       <header class="title">Hitobito API tester</header>
       <form @submit.prevent="runTests">
-        <div class="field has-addons">
+        <b-field label="Hitobito URL" expanded>
           <div class="control">
             <input class="input field" type="url" name="hitobitoUrl" v-model="hitobitoUrl" placeholder="Hitobito URL" required />
           </div>
-          <div class="control">
-            <input class="input field" type="text" name="apiToken" v-model="apiToken" placeholder="API token" />
-          </div>
-          <div class="control">
-            <input class="input field" type="text" name="groupId" v-model="groupId"
-                   placeholder="Id of group or layer" required />
-          </div>
-          <div class="control">
-            <button class="button is-info" type="submit">Run tests</button>
-          </div>
+        </b-field>
+        <b-field grouped>
+          <b-field label="API token" expanded>
+            <div class="control">
+              <input class="input field" type="text" name="apiToken" v-model="apiToken" placeholder="API token" />
+            </div>
+          </b-field>
+          <b-field label="Id of token's group">
+            <div class="control">
+              <input class="input field" type="text" name="groupId" v-model="groupId"
+                     placeholder="Id of group or layer" required />
+            </div>
+          </b-field>
+          <b-field label="Permissions on token">
+            <div class="block">
+              <b-checkbox v-model="peoplePermission" type="is-info">People</b-checkbox>
+              <b-checkbox v-model="peopleBelowPermission" type="is-info">People below</b-checkbox>
+              <b-checkbox v-model="groupsPermission" type="is-info">Groups</b-checkbox>
+              <b-checkbox v-model="eventsPermission" type="is-info">Events</b-checkbox>
+            </div>
+          </b-field>
+        </b-field>
+        <div class="control">
+          <button class="button is-info" type="submit">Run tests</button>
         </div>
       </form>
     </div>
@@ -73,14 +87,21 @@
 </template>
 
 <script>
+import BField from 'buefy/src/components/field/Field'
+import BCheckbox from 'buefy/src/components/checkbox/Checkbox'
 export default {
   name: 'app',
+  components: { BField, BCheckbox },
   data() {
     return {
       tests: [],
       hitobitoUrl: '',
       apiToken: '',
       groupId: '',
+      peoplePermission: true,
+      peopleBelowPermission: true,
+      groupsPermission: true,
+      eventsPermission: true,
       statusFilter: '',
     }
   },
@@ -89,6 +110,10 @@ export default {
     this.hitobitoUrl = urlParams.get('hitobitoUrl') || 'https://pbs.puzzle.ch'
     this.apiToken = urlParams.get('apiToken')
     this.groupId = urlParams.get('groupId')
+    this.peoplePermission = (urlParams.get('people') !== 'false')
+    this.peopleBelowPermission = (urlParams.get('peopleBelow') !== 'false')
+    this.groupsPermission = (urlParams.get('groups') !== 'false')
+    this.eventsPermission = (urlParams.get('events') !== 'false')
     this.$http.get('tests.php').then(result => {
       this.tests = result.data.map(testPath => ({ name: testPath.split('/').pop(), path: testPath, status: 'not_run' }))
     })
@@ -120,7 +145,15 @@ export default {
     runTests() {
       const url = new URL(window.location.href)
       this.setQueryParams(url)
-      window.history.pushState({hitobitoUrl: this.hitobitoUrl, apiToken: this.apiToken, groupId: this.groupId}, document.title, url.toString());
+      window.history.pushState({
+        hitobitoUrl: this.hitobitoUrl,
+        apiToken: this.apiToken,
+        groupId: this.groupId,
+        people: this.peoplePermission,
+        peopleBelow: this.peopleBelowPermission,
+        groups: this.groupsPermission,
+        events: this.eventsPermission,
+      }, document.title, url.toString());
       this.tests = this.tests.map( test => ({ ...test, status: 'not_run' }))
       this.runSingleTest(0)
     },
@@ -151,6 +184,10 @@ export default {
       url.searchParams.set('hitobitoUrl', this.hitobitoUrl)
       url.searchParams.set('apiToken', this.apiToken)
       url.searchParams.set('groupId', this.groupId)
+      url.searchParams.set('people', this.peoplePermission)
+      url.searchParams.set('peopleBelow', this.peopleBelowPermission)
+      url.searchParams.set('groups', this.groupsPermission)
+      url.searchParams.set('events', this.eventsPermission)
     },
     filterByStatus(status) {
       this.statusFilter = status

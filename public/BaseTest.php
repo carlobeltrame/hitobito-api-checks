@@ -8,6 +8,10 @@ abstract class BaseTest {
   protected $url;
   protected $token;
   protected $groupId;
+  protected $peoplePermission;
+  protected $peopleBelowPermission;
+  protected $groupsPermission;
+  protected $eventsPermission;
   protected $path;
   protected $curl;
   protected $responseHeaders = [];
@@ -18,10 +22,16 @@ abstract class BaseTest {
   protected $reproduce = [];
   protected $success = true;
 
-  public function __construct($url, $token, $tokenGroupId, $path) {
+  public function __construct($url, $token, $tokenGroupId,
+                              $peoplePermission, $peopleBelowPermission, $groupsPermission, $eventsPermission,
+                              $path) {
     $this->url = $url;
     $this->token = $token;
     $this->groupId = $tokenGroupId;
+    $this->peoplePermission = $peoplePermission;
+    $this->peopleBelowPermission = $peopleBelowPermission;
+    $this->groupsPermission = $groupsPermission;
+    $this->eventsPermission = $eventsPermission;
     $this->path = $path;
     $this->curl = curl_init();
   }

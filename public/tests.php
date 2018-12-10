@@ -18,6 +18,10 @@ $test = getParam('test');
 $hitobitoUrl = getParam('hitobitoUrl');
 $apiToken = getParam('apiToken');
 $groupId = getParam('groupId');
+$peoplePermission = (getParam('people') !== 'false');
+$peopleBelowPermission = (getParam('peopleBelow') !== 'false');
+$groupsPermission = (getParam('groups') !== 'false');
+$eventsPermission = (getParam('events') !== 'false');
 
 if ($test && $hitobitoUrl && $apiToken && $groupId) {
 
@@ -28,9 +32,11 @@ if ($test && $hitobitoUrl && $apiToken && $groupId) {
 
     require_once $test;
     $classname = basename($test, '.php');
-    /** @var BaseTest $testObject */
-    $testObject = new $classname($hitobitoUrl, $apiToken, $groupId, $test);
-    echo json_encode($testObject->test());
+    /** @var BaseTest $testInstance */
+    $testInstance = new $classname($hitobitoUrl, $apiToken, $groupId,
+      $peoplePermission, $peopleBelowPermission, $groupsPermission, $eventsPermission,
+      $test);
+    echo json_encode($testInstance->test());
 
     return;
 

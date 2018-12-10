@@ -56,7 +56,9 @@
           <b-collapse :open="false">
 
             <div slot="trigger" slot-scope="props">
-              <a style="float: right"><b-icon pack="fas" :icon="props.open ? 'caret-up' : 'caret-down'" type="is-black"></b-icon></a>
+              <a style="float: right" v-if="test.status === 'success' || test.status === 'fail' || test.status === 'not_applicable'">
+                <b-icon pack="fas" :icon="props.open ? 'caret-up' : 'caret-down'" type="is-black"></b-icon>
+              </a>
               <div class="title is-6">{{ test.name }}</div>
               <span v-if="test.status === 'success'">Works as expected.</span>
               <span v-else-if="test.status === 'fail'">{{ test.message }}</span>

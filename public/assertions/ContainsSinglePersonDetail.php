@@ -39,6 +39,20 @@ class ContainsSinglePersonDetail extends BaseAssertion {
     }
 
     $personDetail = $body->people[0];
+    if (!isset($personDetail->type)) {
+      throw new AssertionFailedException(
+        'Person details does not contain a type entry.',
+        'JSON object containing a type entry.',
+        var_export($personDetail, true)
+      );
+    }
+    if ($personDetail->type !== 'people') {
+      throw new AssertionFailedException(
+        'Type inside group details didn\'t match expected value.',
+        'people',
+        var_export($personDetail->type)
+      );
+    }
     if (!isset($personDetail->id)) {
       throw new AssertionFailedException(
         'Person details should contain an id entry.',

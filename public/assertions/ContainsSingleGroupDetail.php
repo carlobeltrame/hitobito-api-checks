@@ -39,6 +39,20 @@ class ContainsSingleGroupDetail extends BaseAssertion {
     }
 
     $groupDetail = $body->groups[0];
+    if (!isset($groupDetail->type)) {
+      throw new AssertionFailedException(
+        'Group details does not contain a type entry.',
+        'JSON object containing a type entry.',
+        var_export($groupDetail, true)
+      );
+    }
+    if ($groupDetail->type !== 'groups') {
+      throw new AssertionFailedException(
+        'Type inside group details didn\'t match expected value.',
+        'groups',
+        var_export($groupDetail->type)
+      );
+    }
     if (!isset($groupDetail->id)) {
       throw new AssertionFailedException(
         'Group details should contain an id entry.',

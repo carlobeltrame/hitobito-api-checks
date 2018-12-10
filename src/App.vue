@@ -53,16 +53,24 @@
           <span v-else-if="test.status === 'not_applicable'" class="panel-icon has-text-grey-light"><i class="fas fa-ban"></i></span>
           <span v-else-if="test.status === 'not_run'" class="panel-icon"><i class="fas fa-stop"></i></span>
           <span v-else-if="test.status === 'running'" class="panel-icon has-text-info"><i class="fas fa-spinner fa-spin"></i></span>
-          <div>
-            <div class="title is-6">{{ test.name }}</div>
+          <b-collapse :open="false">
+
+            <div slot="trigger" slot-scope="props">
+              <a style="float: right"><b-icon pack="fas" :icon="props.open ? 'caret-up' : 'caret-down'" type="is-black"></b-icon></a>
+              <div class="title is-6">{{ test.name }}</div>
+              <span v-if="test.status === 'success'">Works as expected.</span>
+              <span v-else-if="test.status === 'fail'">{{ test.message }}</span>
+              <span v-else-if="test.status === 'not_applicable'">Test is not applicable to the given input parameters.</span>
+              <span v-else-if="test.status === 'not_run'">Not yet run.</span>
+              <span v-else-if="test.status === 'running'">Running...</span>
+            </div>
+
             <span v-if="test.status === 'success'">
-              Works as expected.
               <div v-if="test.reproduce && test.reproduce.length"><b>Steps to reproduce:</b>
                 <pre class="reproduce" v-for="(step, index) in test.reproduce" :key="index"><div v-for="(line, lineindex) in step" :key="lineindex">{{ line }}</div></pre>
               </div>
             </span>
             <span v-else-if="test.status === 'fail'">
-              {{ test.message }}
               <div v-if="test.reproduce && test.reproduce.length"><b>Steps to reproduce:</b>
                 <pre class="reproduce" v-for="(step, index) in test.reproduce" :key="index"><div v-for="(line, lineindex) in step" :key="lineindex">{{ line }}</div></pre>
               </div>
@@ -70,16 +78,10 @@
               <div v-if="test.actual"><b>Actual:</b> {{ test.actual }}</div>
             </span>
             <span v-else-if="test.status === 'not_applicable'">
-              Test is not applicable to the given input parameters.
               <div v-if="test.message"><b>Reason:</b> {{ test.message }}</div>
             </span>
-            <span v-else-if="test.status === 'not_run'">
-              Not yet run.
-            </span>
-            <span v-else-if="test.status === 'running'">
-              Running...
-            </span>
-          </div>
+
+          </b-collapse>
         </a>
       </section>
     </div>
@@ -89,9 +91,11 @@
 <script>
 import BField from 'buefy/src/components/field/Field'
 import BCheckbox from 'buefy/src/components/checkbox/Checkbox'
+import BCollapse from 'buefy/src/components/collapse/Collapse'
+import BIcon from 'buefy/src/components/icon/Icon'
 export default {
   name: 'app',
-  components: { BField, BCheckbox },
+  components: { BIcon, BCollapse, BField, BCheckbox },
   data() {
     return {
       tests: [],

@@ -4,6 +4,7 @@ require_once __DIR__ . '/../HeadersTest.php';
 require_once __DIR__ . '/../assertions/ResponseCode200.php';
 require_once __DIR__ . '/../assertions/JsonResponse.php';
 require_once __DIR__ . '/../assertions/ContainsListOfPeople.php';
+require_once __DIR__ . '/../assertions/Not.php';
 
 class GroupMembersHeadersTest extends HeadersTest {
 
@@ -16,10 +17,18 @@ class GroupMembersHeadersTest extends HeadersTest {
   }
 
   public function then() {
-    return [
-      new ResponseCode200(),
-      new JsonResponse(),
-      new ContainsListOfPeople(),
-    ];
+    if ($this->peoplePermission) {
+      return [
+        new ResponseCode200(),
+        new JsonResponse(),
+        new ContainsListOfPeople(),
+      ];
+    } else {
+      return [
+        new ResponseCode200(),
+        new JsonResponse(),
+        new Not(new ContainsListOfPeople()),
+      ];
+    }
   }
 }

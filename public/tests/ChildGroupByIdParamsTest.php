@@ -16,6 +16,9 @@ class ChildGroupByIdParamsTest extends ParamsTest {
 
   public function given() {
     parent::given();
+    if (!$this->groupsPermission) {
+      throw new TestNotApplicableException('Token does not have permission to read the group itself, let alone its children.');
+    }
     $this->do_get_request('/groups/' . $this->groupId);
     $children = json_decode($this->responseBody)->groups[0]->links->children;
     if (!is_array($children) || count($children) < 1) {
@@ -29,7 +32,6 @@ class ChildGroupByIdParamsTest extends ParamsTest {
   }
 
   public function then() {
-    // TODO depending on the token's permissions, return different assertions
     return [
       new ResponseCode200(),
       new JsonResponse(),

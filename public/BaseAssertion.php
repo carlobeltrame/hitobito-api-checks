@@ -1,7 +1,6 @@
 <?php
 
 require_once __DIR__ . '/BaseTest.php';
-require_once __DIR__ . '/AssertionFailedException.php';
 
 abstract class BaseAssertion {
 

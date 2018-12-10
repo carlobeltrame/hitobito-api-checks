@@ -17,8 +17,8 @@ class RootGroupByIdHeadersTest extends HeadersTest {
   }
 
   public function then() {
-    // If the token is on the root group, we should be granted access
-    if ($this->groupId === '1') {
+    // If the token is on the root group and we have the necessary token permission, we should be granted access
+    if ($this->groupId === '1' && $this->groupsPermission) {
       return [
         new ResponseCode200(),
         new JsonResponse(),

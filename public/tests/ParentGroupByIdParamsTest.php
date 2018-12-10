@@ -17,6 +17,9 @@ class ParentGroupByIdParamsTest extends ParamsTest {
 
   public function given() {
     parent::given();
+    if (!$this->groupsPermission) {
+      throw new TestNotApplicableException('Token does not have permission to read the group itself, let alone its parent.');
+    }
     $this->do_get_request('/groups/' . $this->groupId);
     $this->parentId = json_decode($this->responseBody)->groups[0]->links->parent;
     if (!$this->parentId) {

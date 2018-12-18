@@ -16,7 +16,7 @@ class EventOfGroupParamsTest extends ParamsTest {
 
   protected function find_any_event($groupId) {
     if ($this->eventsPermission) {
-      $this->do_get_request('/groups/' . $groupId . '/events');
+      $this->do_get_request('/groups/' . $groupId . '/events', [], [ 'start_date' => '01-01-2000' ]);
       $body = json_decode($this->get_response_body());
       if (isset($body->events) && is_array($body->events) && count($body->events)) {
         $event = $body->events[0];
@@ -24,23 +24,6 @@ class EventOfGroupParamsTest extends ParamsTest {
           return array($event->links->groups[0], $event->id);
         }
       }
-
-      // Look for events in child groups
-      // Disabled for now, because it takes too long to execute, and the children's events should show up in the group's events anyway
-//      $this->do_get_request('/groups/' . $groupId);
-//      $body = json_decode($this->get_response_body());
-//      if (isset($body->groups) && is_array($body->groups) && count($body->groups)) {
-//        $group = $body->groups[0];
-//        if (isset($group->links) && isset($group->links->children) && is_array($group->links->children)) {
-//          $children = $group->links->children;
-//          foreach ($children as $subgroup) {
-//            list($groupIdWithEvent, $eventId) = $this->find_any_event($subgroup);
-//            if ($groupIdWithEvent !== null && $eventId !== null) {
-//              return array($groupIdWithEvent, $eventId);
-//            }
-//          }
-//        }
-//      }
     }
 
     // No event found, give up
@@ -55,7 +38,6 @@ class EventOfGroupParamsTest extends ParamsTest {
     if ($this->eventGroupId === null || $this->eventId === null) {
       throw new TestNotApplicableException('No event found that is accessible with this token.');
     }
-
   }
 
   public function when() {

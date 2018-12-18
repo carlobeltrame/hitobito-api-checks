@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/TestNotApplicableException.php';
 require_once __DIR__ . '/AssertionFailedException.php';
+require_once __DIR__ . '/http_build_url.php';
 
 abstract class BaseTest {
 
@@ -121,9 +122,14 @@ abstract class BaseTest {
     ];
   }
 
-  protected function do_get_request($path, $headers = []) {
+  protected function do_get_request($path, $headers = [], $query = []) {
 
-    $url = $this->url . $path;
+    $urlParts = parse_url($this->url . $path);
+    parse_str($urlParts['query'], $params);
+    $urlParts['query'] = http_build_query(array_merge($params, $query));
+
+    $url = http_build_url($urlParts);
+
     curl_setopt($this->curl, CURLOPT_URL, $url);
     curl_setopt($this->curl, CURLOPT_HTTPHEADER, $headers);
 

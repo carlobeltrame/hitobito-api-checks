@@ -2,7 +2,7 @@
   <div class="container">
     <div class="section">
       <header class="title">Hitobito API tester</header>
-      <form @submit.prevent="runTests">
+      <form @submit.prevent="runTestsOrStop">
         <b-field label="Hitobito URL" expanded>
           <div class="control">
             <input class="input field" type="url" name="hitobitoUrl" v-model="hitobitoUrl" placeholder="Hitobito URL" required />
@@ -30,7 +30,9 @@
           </b-field>
         </b-field>
         <div class="control">
-          <button class="button is-info" type="submit">Run tests</button>
+          <button class="button is-danger is-outlined" type="submit" v-if="currentState === 'running'">Stop tests</button>
+          <button class="button is-info is-outlined" type="submit" disabled v-else-if="currentState === 'stopping'">Stopping...</button>
+          <button class="button is-info" type="submit" v-else>Run tests</button>
         </div>
       </form>
     </div>
@@ -95,6 +97,7 @@ import BField from 'buefy/src/components/field/Field'
 import BCheckbox from 'buefy/src/components/checkbox/Checkbox'
 import BCollapse from 'buefy/src/components/collapse/Collapse'
 import BIcon from 'buefy/src/components/icon/Icon'
+
 export default {
   name: 'app',
   components: { BIcon, BCollapse, BField, BCheckbox },
@@ -109,6 +112,7 @@ export default {
       groupsPermission: true,
       eventsPermission: true,
       statusFilter: '',
+      stop: false
     }
   },
   created() {
@@ -145,23 +149,32 @@ export default {
     },
     filteredTests() {
       return this.tests.filter(test => test.status === this.statusFilter || this.statusFilter === '')
+    },
+    currentState() {
+      if (this.stop) return 'stopping'
+      if (this.tests.some(test => test.status === 'running')) return 'running'
+      return 'idle'
     }
   },
   methods: {
-    runTests() {
-      const url = new URL(window.location.href)
-      this.setQueryParams(url)
-      window.history.pushState({
-        hitobitoUrl: this.hitobitoUrl,
-        apiToken: this.apiToken,
-        groupId: this.groupId,
-        people: this.peoplePermission,
-        peopleBelow: this.peopleBelowPermission,
-        groups: this.groupsPermission,
-        events: this.eventsPermission,
-      }, document.title, url.toString());
-      this.tests = this.tests.map( test => ({ ...test, status: 'not_run' }))
-      this.runSingleTest(0)
+    runTestsOrStop() {
+      if (this.currentState === 'running') {
+        this.stopExecution()
+      } else if (this.currentState === 'idle') {
+        const url = new URL(window.location.href)
+        this.setQueryParams(url)
+        window.history.pushState({
+          hitobitoUrl: this.hitobitoUrl,
+          apiToken: this.apiToken,
+          groupId: this.groupId,
+          people: this.peoplePermission,
+          peopleBelow: this.peopleBelowPermission,
+          groups: this.groupsPermission,
+          events: this.eventsPermission,
+        }, document.title, url.toString());
+        this.tests = this.tests.map(test => ({ ...test, status: 'not_run' }))
+        this.runSingleTest(0)
+      }
     },
     runSingleTest(index) {
       if (index >= this.numTests) return;
@@ -172,7 +185,11 @@ export default {
       this.setQueryParams(url)
       this.$http.get(url.toString()).then(result => {
         this.$set(this.tests, index, result.data)
-        this.runSingleTest(index + 1)
+        if (this.currentState !== 'stopping') {
+          this.runSingleTest(index + 1)
+        } else {
+          this.stop = false
+        }
       }).catch(error => {
         this.$set(this.tests, index, {
           name: singleTest.name,
@@ -183,7 +200,11 @@ export default {
           actual: '',
           reproduce: []
         })
-        this.runSingleTest(index + 1)
+        if (this.currentState !== 'stopping') {
+          this.runSingleTest(index + 1)
+        } else {
+          this.stop = false
+        }
       })
     },
     setQueryParams(url) {
@@ -197,6 +218,9 @@ export default {
     },
     filterByStatus(status) {
       this.statusFilter = status
+    },
+    stopExecution() {
+      this.stop = true
     }
   }
 }

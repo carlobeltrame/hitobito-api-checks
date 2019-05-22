@@ -11,7 +11,7 @@ class ChildGroupByIdParamsTest extends ParamsTest {
   protected $childId;
 
   public function get_name() {
-    return 'Get group details of parent of token\'s group (' . parent::get_name() . ')';
+    return 'Get group details of child of token\'s group (' . parent::get_name() . ')';
   }
 
   public function given() {
